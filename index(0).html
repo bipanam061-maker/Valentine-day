@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>valentineday Gift 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --box-color: rgba(255,182,193,0.25);
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:Arial, sans-serif;
+  background:radial-gradient(circle at top,#ff9aa2,#ff758c,#ff7eb3);
+  overflow:hidden;
+  padding:20px;
+}
+
+/* Card */
+.card{
+  text-align:center;
+  color:white;
+  padding:35px;
+  max-width:420px;
+  width:100%;
+  background:var(--box-color);
+  border-radius:28px;
+  box-shadow:0 25px 60px rgba(0,0,0,0.4);
+  backdrop-filter: blur(12px);
+  animation:pop 0.8s ease;
+  z-index:5;
+}
+
+@keyframes pop{
+  from{transform:scale(0.85);opacity:0;}
+  to{transform:scale(1);opacity:1;}
+}
+
+h1{font-size:36px;margin-bottom:18px;}
+p{font-size:19px;margin-bottom:16px;}
+
+.name-input{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:20px;
+  font-size:18px;
+  text-align:center;
+  margin-bottom:18px;
+}
+
+/* Upload */
+input[type=file]{
+  width:100%;
+  margin-bottom:18px;
+}
+
+/* Buttons */
+button{
+  padding:12px 26px;
+  border:none;
+  border-radius:25px;
+  font-size:20px;
+  cursor:pointer;
+}
+
+.yes{
+  background:#ff4d6d;
+  color:white;
+  margin-right:10px;
+}
+
+.no{background:#eee;}
+
+/* Photo */
+.photo{
+  width:210px;
+  height:210px;
+  border-radius:50%;
+  object-fit:cover;
+  margin:20px auto;
+  box-shadow:0 0 35px rgba(255,255,255,0.9);
+  animation:photoIn 1.6s ease forwards;
+}
+
+@keyframes photoIn{
+  0%{opacity:0;transform:scale(0.4);}
+  70%{opacity:1;transform:scale(1.1);}
+  100%{transform:scale(1);}
+}
+
+/* Hearts */
+.heart{
+  position:absolute;
+  font-size:26px;
+  animation:floatUp 6s linear infinite;
+}
+
+@keyframes floatUp{
+  0%{transform:translateY(0);opacity:1;}
+  100%{transform:translateY(-1000px);opacity:0;}
+}
+
+/* Fireworks */
+.firework{
+  position:absolute;
+  width:6px;
+  height:6px;
+  background:white;
+  border-radius:50%;
+  animation:explode 1.2s ease-out forwards;
+}
+
+@keyframes explode{
+  to{transform:scale(18);opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="firstPage">
+  <h1>Will you be my Valentine? 💖</h1>
+
+  <input type="text" id="nameInput" class="name-input"
+         value="Bipana Thapa Magar">
+
+  <!-- PHOTO UPLOAD (ONE TIME) -->
+  <input type="file" accept="image/*" id="photoInput">
+
+  <p>One tiny question for my favourite person 🥹</p>
+
+  <button class="yes" onclick="yesClick()">Yes 💕</button>
+  <button class="no" onmouseover="moveNo()">No 🥲</button>
+</div>
+
+<script>
+// AUTO FULLSCREEN (user interaction required)
+document.addEventListener("click",()=>{
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen().catch(()=>{});
+  }
+},{once:true});
+
+// Save photo as base64
+document.getElementById("photoInput").addEventListener("change",function(){
+  let file=this.files[0];
+  let reader=new FileReader();
+  reader.onload=()=>{
+    localStorage.setItem("savedPhoto",reader.result);
+  };
+  reader.readAsDataURL(file);
+});
+
+function yesClick(){
+  let name=document.getElementById("nameInput").value || "My Love";
+  let photo=localStorage.getItem("savedPhoto");
+
+  if(!photo){
+    alert("Please select a photo first ❤️");
+    return;
+  }
+
+  document.body.innerHTML=`
+    <div class="card">
+      <h1>${name} said YES! 💖💍</h1>
+      <img src="${photo}" class="photo">
+      <p>You just made my world brighter 🥰</p>
+      <p>Happy Valentine’s Day 🌹💌</p>
+      <p>Forever & always ✨❤️</p>
+    </div>
+  `;
+
+  // Hearts
+  for(let i=0;i<35;i++){
+    let h=document.createElement("div");
+    h.className="heart";
+    h.innerText="💖";
+    h.style.left=Math.random()*window.innerWidth+"px";
+    h.style.top="100%";
+    document.body.appendChild(h);
+  }
+
+  // Fireworks
+  setInterval(()=>{
+    let f=document.createElement("div");
+    f.className="firework";
+    f.style.left=Math.random()*window.innerWidth+"px";
+    f.style.top=Math.random()*window.innerHeight+"px";
+    f.style.background=
+      ["#fff","#ff4d6d","#ffeb3b","#ff7eb3"][Math.floor(Math.random()*4)];
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),1200);
+  },300);
+}
+
+function moveNo(){
+  let btn=document.querySelector(".no");
+  btn.style.transform=
+    "translate("+(Math.random()*200-100)+"px,"+(Math.random()*200-100)+"px)";
+}
+</script>
+
+</body>
+</html>
